@@ -1,0 +1,35 @@
+version: '3.9'
+
+services:
+  api:
+    build:
+      context: ./TaskManager.Api
+      dockerfile: Dockerfile
+    environment:
+      ASPNETCORE_URLS: http://0.0.0.0:8080
+      ConnectionStrings__DefaultConnection: Data Source=/data/tasks.db
+      FrontendOrigin: ${FRONTEND_ORIGIN:-http://localhost}
+      Jwt__Secret: ${JWT_SECRET:-0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef}
+      Jwt__Issuer: TaskManager.Api
+      Jwt__Audience: TaskManager.Client
+    volumes:
+      - api_data:/data
+    ports:
+      - "8080:8080"
+    restart: unless-stopped
+
+  frontend:
+    build:
+      context: ./TaskManager.Frontend
+      dockerfile: Dockerfile
+    environment:
+      VITE_API_BASE_URL: /api/v1
+    ports:
+      - "8081:80"
+    depends_on:
+      - api
+    restart: unless-stopped
+
+volumes:
+  api_data:
+    driver: local
