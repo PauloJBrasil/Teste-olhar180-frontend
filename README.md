@@ -1,4 +1,4 @@
-# TaskManager.Frontend (Vite + React + TypeScript)
+# Teste-olhar180-frontend (Vite + React + TypeScript)
 
 Frontend separado para o Gerenciador de Tarefas, conectando à API .NET.
 
@@ -11,7 +11,7 @@ Frontend separado para o Gerenciador de Tarefas, conectando à API .NET.
 
 ## Como rodar o projeto localmente
 1) Instale Node.js LTS
-2) Na pasta `TaskManager.Frontend`: `npm install`
+2) Na pasta `Teste-olhar180-frontend`: `npm install`
 3) Dev server: `npm run dev` (abre em `http://localhost:5173`)
 
 ### Configuração de API (local)
