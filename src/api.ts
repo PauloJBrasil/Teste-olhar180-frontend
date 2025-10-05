@@ -25,10 +25,23 @@ api.interceptors.response.use(
   (response) => response,
   (error) => {
     const resp = error?.response;
-    if (resp && resp.data) {
+    if (resp) {
+      const status = resp.status;
+      const path = (resp.config?.url || '').toString();
       let message = 'Erro na requisição';
+
+      // Mapeamento específico por status/rota
+      if (status === 401) {
+        message = path.includes('/auth/login') ? 'Usuário ou senha inválidos' : 'Não autorizado';
+      } else if (status === 409) {
+        message = path.includes('/auth/register') ? 'Usuário ou email já existente' : 'Conflito na operação';
+      }
+
       const d = resp.data;
-      if (typeof d === 'object') {
+      if (typeof d === 'string' && d.trim().length > 0) {
+        // Se a API retornou texto simples, prioriza essa mensagem
+        message = d;
+      } else if (d && typeof d === 'object') {
         if (d.title || d.detail) {
           message = `${d.title ?? 'Erro'}${d.detail ? ': ' + d.detail : ''}`;
         } else if (d.errors) {
@@ -40,6 +53,7 @@ api.interceptors.response.use(
           message = d.message;
         }
       }
+
       return Promise.reject(new Error(message));
     }
     return Promise.reject(error);
